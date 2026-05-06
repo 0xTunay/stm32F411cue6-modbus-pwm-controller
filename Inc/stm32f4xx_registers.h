@@ -1,0 +1,8 @@
+#ifndef STM32f4XX_REGISTERS_H
+#define STM32F4XX_REGISTERS_H
+
+#define BIT(x) (1UL << (x))
+
+
+
+#endif // STM32F4XX_REGISTERS_H
