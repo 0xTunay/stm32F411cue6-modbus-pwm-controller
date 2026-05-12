@@ -3,26 +3,24 @@
 
 #include "stm32f4xx_registers.h"
 #include "delay.h"
-
-
+#include "usart.h"
+#include "clock.h"
 
 int main(void) {
-
+    
+    clock_init();
     SysTick_Init();
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+    USART2_Init();
 
-    GPIOA->MODER &= ~(3U << 24);
-    GPIOA->MODER &= ~(3U << 26);
-    GPIOA->MODER |=  (1U << 24);
-    GPIOA->MODER |=  (1U << 26);
+    USART2_SendString("Hello from STM32F411!\r\n");
+    USART2_SendString("Echo test started...\r\n");
 
+    
     while(1) {
-        GPIOA->BSRR = BIT(28);
-        GPIOA->BSRR = BIT(29);
-        SysTick_Delay(100);
-
-        GPIOA->BSRR = BIT(12);
-        GPIOA->BSRR = BIT(13);
-        SysTick_Delay(1000);
+        char c = USART2_GetChar();
+        USART2_SendChar(c);
+        if(c == '\r') {
+            USART2_SendChar('\n');
+        }
     }
 }
