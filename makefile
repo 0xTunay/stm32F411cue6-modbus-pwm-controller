@@ -19,7 +19,8 @@ $(SRC_DIR)/main.c \
 $(SRC_DIR)/system_stm32f4xx.c \
 $(SRC_DIR)/delay.c \
 $(SRC_DIR)/usart.c \
-$(SRC_DIR)/clock.c
+$(SRC_DIR)/clock.c \
+$(SRC_DIR)/rs485.c
 
 ASM_SOURCES = \
 startup_stm32f411xe.s
