@@ -17,7 +17,7 @@ void USART2_Init(void) {
     GPIOA->AFR[0] |= ((7 << 8) | (7 << 12));
 
 
-    USART2->BRR = 0x1A1; /* 115200 baud rate at 16 MHz */
+    USART2->BRR = 0x0341;
 
     /* Setup CR1 */
 

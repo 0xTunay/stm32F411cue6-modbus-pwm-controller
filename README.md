@@ -5,4 +5,4 @@
 
 ## System Architecture diagram 
 
-![img](docs/2898a20f-21ab-4085-9d1e-0abf0e540505.png)
+![img](docs/1777704624116.jpeg)
