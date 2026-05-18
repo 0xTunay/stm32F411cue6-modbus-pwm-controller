@@ -8,7 +8,7 @@
 
 int main(void) {
     
-    clock_init();
+    // clock_init();
     SysTick_Init();
     USART2_Init();
 
