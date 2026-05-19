@@ -25,8 +25,8 @@ void USART2_Init(void)
     GPIOA->PUPDR |=  (1U << (3 * 2));
 
     // 16MHz -> 115200
-    USART2->BRR = 0x8B;
-
+    // USART2->BRR = 0x8B;
+    USART2->BRR = 0x0683; // 9600 baud for 96MHz
     USART2->CR1 = 0;
     USART2->CR1 |= USART_CR1_TE;
     USART2->CR1 |= USART_CR1_RE;

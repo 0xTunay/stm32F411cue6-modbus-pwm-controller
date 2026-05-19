@@ -8,7 +8,8 @@
 
 int main(void) {
     
-    // clock_init();
+    clock_init();
+    USART2_SendString("System started at 96MHz!\r\n");
     SysTick_Init();
     USART2_Init();
 
