@@ -18,3 +18,5 @@ This project consists of:
 ## System Architecture Diagram 
 
 ![img](docs/1777704624116.jpeg)
+
+For more details, see the [STM32F411CE Documentation](https://www.st.com/resource/en/datasheet/stm32f411ce.pdf).
