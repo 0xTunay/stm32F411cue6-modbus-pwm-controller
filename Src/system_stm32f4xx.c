@@ -1,11 +1,7 @@
 #include "stm32f4xx.h"
 
-uint32_t SystemCoreClock = 16000000UL;   // Default HSI 16 MHz
+uint32_t SystemCoreClock = 16000000UL;
 
-/**
- * @brief  Setup the microcontroller system
- *         Initialize the FPU, vector table and system clock
- */
 void SystemInit(void)
 {
     /* FPU settings ------------------------------------------------------------*/
