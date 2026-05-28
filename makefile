@@ -14,13 +14,26 @@ BIN     = $(CP) -O binary
 SRC_DIR     = Src
 INC_DIR     = Inc
 CMSIS_DIR   = Drivers/CMSIS
+VPATH       = Src:Drivers/freemodbus/modbus:Drivers/freemodbus/modbus/functions:Drivers/freemodbus/modbus/rtu:Drivers/freemodbus/port
 C_SOURCES = \
 $(SRC_DIR)/main.c \
 $(SRC_DIR)/system_stm32f4xx.c \
 $(SRC_DIR)/delay.c \
 $(SRC_DIR)/usart.c \
 $(SRC_DIR)/clock.c \
-$(SRC_DIR)/rs485.c
+$(SRC_DIR)/rs485.c \
+$(SRC_DIR)/modbus_port.c \
+$(SRC_DIR)/syscalls.c \
+Drivers/freemodbus/modbus/mb.c \
+Drivers/freemodbus/modbus/mbutils.c \
+Drivers/freemodbus/modbus/functions/mbfuncother.c \
+Drivers/freemodbus/modbus/functions/mbfuncholding.c \
+Drivers/freemodbus/modbus/functions/mbfuncinput.c \
+Drivers/freemodbus/modbus/functions/mbfunccoils.c \
+Drivers/freemodbus/modbus/functions/mbfuncdisc.c \
+Drivers/freemodbus/modbus/rtu/mbcrc.c \
+Drivers/freemodbus/modbus/rtu/mbrtu.c \
+Drivers/freemodbus/port/user_mb_app.c
 
 ASM_SOURCES = \
 startup_stm32f411xe.s
@@ -28,7 +41,11 @@ startup_stm32f411xe.s
 INCLUDES = \
 -I$(INC_DIR) \
 -I$(CMSIS_DIR)/Device/ST/STM32F4xx/Include \
--I$(CMSIS_DIR)/Include
+-I$(CMSIS_DIR)/Include \
+-IDrivers/freemodbus/modbus/include \
+-IDrivers/freemodbus/modbus/rtu \
+-IDrivers/freemodbus/modbus/ascii \
+-IDrivers/freemodbus/port
 
 CFLAGS = -mcpu=$(CPU) \
          -mfpu=$(FPU) \
@@ -53,13 +70,14 @@ LDFLAGS = -mcpu=$(CPU) \
           -Wl,--gc-sections \
           -Wl,-Map=$(TARGET).map,--cref
 
-OBJECTS = $(addprefix build/,$(notdir $(C_SOURCES:.c=.o))) \
+OBJECTS = $(patsubst %.c,build/%.o,$(notdir $(C_SOURCES))) \
           $(addprefix build/,$(notdir $(ASM_SOURCES:.s=.o)))
 
-all: $(TARGET).elf $(TARGET).hex $(TARGET).bin
-
-build/%.o: $(SRC_DIR)/%.c | build
+build/%.o: %.c | build
+	mkdir -p $(dir $@)
 	$(CC) -c $(CFLAGS) $< -o $@
+
+all: $(TARGET).elf $(TARGET).hex $(TARGET).bin
 
 build/%.o: %.s | build
 	$(AS) -c $(CFLAGS) $< -o $@

@@ -1,5 +1,7 @@
 #include "usart.h"
+#include "delay.h"
 #include "stm32f4xx.h"
+#include <stddef.h>
 
 void USART2_Init(void) {
     /* Enable tacks */
@@ -46,4 +48,53 @@ void USART2_SendString(const char *str) {
 char USART2_GetChar(void) {
     while (!(USART2->SR & USART_SR_RXNE));
     return (char)USART2->DR;
+}
+
+int USART2_GetCharTimeout(char *ch, uint32_t timeout_ms) {
+    if (ch == NULL) {
+        return 0;
+    }
+
+    while (!(USART2->SR & USART_SR_RXNE)) {
+        if (timeout_ms == 0) {
+            return 0;
+        }
+        SysTick_Delay(1);
+        timeout_ms--;
+    }
+
+    *ch = (char)USART2->DR;
+    return 1;
+}
+
+int USART2_ReadLineTimeout(char *buf, uint32_t bufsize, uint32_t timeout_ms) {
+    if (buf == NULL || bufsize == 0) {
+        return -1;
+    }
+
+    uint32_t count = 0;
+    char ch;
+
+    if (!USART2_GetCharTimeout(&ch, timeout_ms)) {
+        return 0;
+    }
+
+    buf[count++] = ch;
+    if (ch == '\r' || ch == '\n') {
+        buf[count] = '\0';
+        return count;
+    }
+
+    while (count < bufsize - 1) {
+        if (!USART2_GetCharTimeout(&ch, timeout_ms)) {
+            break;
+        }
+        buf[count++] = ch;
+        if (ch == '\r' || ch == '\n') {
+            break;
+        }
+    }
+
+    buf[count] = '\0';
+    return count;
 }

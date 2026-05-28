@@ -2,6 +2,8 @@
 
 #include "delay.h"
 
+extern void Modbus_TimerTick(void);
+
 static volatile uint32_t delay_tick = 0;
 
 void SysTick_Handler(void){
@@ -9,6 +11,8 @@ void SysTick_Handler(void){
     if (delay_tick > 0) {
         delay_tick--;
     }
+
+    Modbus_TimerTick();
 }
 
 void SysTick_Init(void) {
