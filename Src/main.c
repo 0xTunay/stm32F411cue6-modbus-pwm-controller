@@ -1,41 +1,24 @@
 #include <stdint.h>
 #include "stm32f4xx.h"
+#include "clock.h"
 #include "delay.h"
 #include "usart.h"
 #include "rs485.h"
-#include "clock.h"
-#include "mb.h"
-#include "mbconfig.h"
-#include "user_mb_app.h"
-
-extern void vMBPortSerialPoll(void);
 
 int main(void) {
-    eMBErrorCode eStatus;
-
-    clock_init();
+   // clock_init();        /* Configure system to 72 MHz */
     SysTick_Init();
-    USART2_Init();
-    RS485_Init();
+    RS485_Init();        /* Initialize USART2 + RS-485 */
 
-    USART2_SendString("Modbus RTU slave starting...\r\n");
+    USART2_SendString("STM32F411 Modbus PWM Controller\r\n");
+    USART2_SendString("System started successfully!\r\n");
 
-    eStatus = eMBInit(MB_RTU, 1, 1, 115200UL, MB_PAR_NONE);
-    if (eStatus != MB_ENOERR) {
-        USART2_SendString("Modbus init failed\r\n");
-        while (1) {}
-    }
+    while(1) {
+        /* Simple test - echo received data */
+        char c = USART2_GetChar();
+        USART2_SendChar(c);
 
-    eStatus = eMBEnable();
-    if (eStatus != MB_ENOERR) {
-        USART2_SendString("Modbus enable failed\r\n");
-        while (1) {}
-    }
-
-    USART2_SendString("Modbus RTU slave ready\r\n");
-
-    while (1) {
-        vMBPortSerialPoll();
-        eMBPoll();
+        if (c == '\r')
+            USART2_SendChar('\n');
     }
 }
