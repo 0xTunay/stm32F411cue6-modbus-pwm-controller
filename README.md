@@ -5,7 +5,7 @@
 Bare-metal Modbus RTU slave for PWM fan control over RS-485
 
 [![MCU](https://img.shields.io/badge/STM32F411CEU6-03234B?logo=stmicroelectronics\&logoColor=white)](https://www.st.com/en/microcontrollers-microprocessors/stm32f411.html)
-[![CMake](https://img.shields.io/badge/CMake-Build-064F8C?logo=cmake\&logoColor=white)](https://cmake.org/)
+[![Build](https://img.shields.io/badge/Build-Makefile-427819?logo=gnu&logoColor=white)](Makefile)
 [![C99](https://img.shields.io/badge/C99-Language-A8B9CC?logo=c\&logoColor=white)
 ](https://en.cppreference.com/w/c)
 [![Modbus RTU](https://img.shields.io/badge/Modbus-RTU-6C3483)](https://modbus.org/)
@@ -33,7 +33,7 @@ STM32F411-based Modbus RTU slave controller designed for controlling up to three
 * Three independent PWM outputs
 * Tachometer feedback measurement
 * Register-based control interface
-* CMake build system
+* Makefile build system
 * OpenOCD and GDB debugging support
 
 ---
