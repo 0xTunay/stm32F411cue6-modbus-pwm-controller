@@ -21,6 +21,7 @@ $(SRC_DIR)/system_stm32f4xx.c \
 $(SRC_DIR)/delay.c \
 $(SRC_DIR)/usart.c \
 $(SRC_DIR)/clock.c \
+$(SRC_DIR)/pwm.c \
 $(SRC_DIR)/rs485.c \
 $(SRC_DIR)/modbus_port.c \
 $(SRC_DIR)/syscalls.c \

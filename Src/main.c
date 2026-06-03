@@ -1,17 +1,22 @@
 #include <stdint.h>
 #include "stm32f4xx.h"
+#include "clock.h"
 #include "delay.h"
 #include "usart.h"
 #include "rs485.h"
 #include "port.h"
+#include "pwm.h"
 #include "mb.h"
 #include "mbport.h"
 
 int main(void) {
+    clock_init();
     SysTick_Init();
+    PWM_Init();
     RS485_Init();
 
     USART2_SendString("STM32F411 Modbus RTU Slave starting...\r\n");
+    USART2_SendString("PWM enabled on PA5 (TIM2_CH1) at 20 kHz, 50% duty.\r\n");
 
     if (eMBInit(MB_RTU, 1, 2, 9600, MB_PAR_NONE) != MB_ENOERR) {
         USART2_SendString("Modbus init failed\r\n");
