@@ -2,8 +2,9 @@
 #define PWM_H
 
 #include <stdint.h>
+#include "error_handler.h"
 
-void PWM_Init(void);
-void PWM_SetDutyPercent(uint8_t percent);
+ModbusError_t PWM_Init(void);
+ModbusError_t PWM_SetDutyPercent(uint8_t percent);
 
 #endif /* PWM_H */

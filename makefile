@@ -24,6 +24,7 @@ $(SRC_DIR)/clock.c \
 $(SRC_DIR)/pwm.c \
 $(SRC_DIR)/rs485.c \
 $(SRC_DIR)/modbus_port.c \
+$(SRC_DIR)/modbus_regs.c \
 $(SRC_DIR)/syscalls.c \
 Drivers/freemodbus/modbus/mb.c \
 Drivers/freemodbus/modbus/mbutils.c \
@@ -41,6 +42,7 @@ startup_stm32f411xe.s
 
 INCLUDES = \
 -I$(INC_DIR) \
+-I$(SRC_DIR) \
 -I$(CMSIS_DIR)/Device/ST/STM32F4xx/Include \
 -I$(CMSIS_DIR)/Include \
 -IDrivers/freemodbus/modbus/include \

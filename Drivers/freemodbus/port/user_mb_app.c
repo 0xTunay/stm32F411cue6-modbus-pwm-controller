@@ -19,28 +19,7 @@
  * File: $Id: user_mb_app.c,v 1.60 2013/11/23 11:49:05 Armink $
  */
 #include "user_mb_app.h"
-
-/*------------------------Slave mode use these variables----------------------*/
-//Slave mode:DiscreteInputs variables
-USHORT   usSDiscInStart                               = S_DISCRETE_INPUT_START;
-#if S_DISCRETE_INPUT_NDISCRETES%8
-UCHAR    ucSDiscInBuf[S_DISCRETE_INPUT_NDISCRETES/8+1];
-#else
-UCHAR    ucSDiscInBuf[S_DISCRETE_INPUT_NDISCRETES/8]  ;
-#endif
-//Slave mode:Coils variables
-USHORT   usSCoilStart                                 = S_COIL_START;
-#if S_COIL_NCOILS%8
-UCHAR    ucSCoilBuf[S_COIL_NCOILS/8+1]                ;
-#else
-UCHAR    ucSCoilBuf[S_COIL_NCOILS/8]                  ;
-#endif
-//Slave mode:InputRegister variables
-USHORT   usSRegInStart                                = S_REG_INPUT_START;
-USHORT   usSRegInBuf[S_REG_INPUT_NREGS]               ;
-//Slave mode:HoldingRegister variables
-USHORT   usSRegHoldStart                              = S_REG_HOLDING_START;
-USHORT   usSRegHoldBuf[S_REG_HOLDING_NREGS]           ;
+#include "modbus_regs.h"
 
 /**
  * Modbus slave input register callback function.
@@ -60,10 +39,10 @@ eMBErrorCode eMBRegInputCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNReg
     USHORT          REG_INPUT_NREGS;
     USHORT          usRegInStart;
 
-    pusRegInputBuf = usSRegInBuf;
+    pusRegInputBuf = ModbusRegs_GetInputBuffer();
     REG_INPUT_START = S_REG_INPUT_START;
     REG_INPUT_NREGS = S_REG_INPUT_NREGS;
-    usRegInStart = usSRegInStart;
+    usRegInStart = S_REG_INPUT_START;
 
     /* it already plus one in modbus function method. */
     usAddress--;
@@ -108,10 +87,10 @@ eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress,
     USHORT          REG_HOLDING_NREGS;
     USHORT          usRegHoldStart;
 
-    pusRegHoldingBuf = usSRegHoldBuf;
+    pusRegHoldingBuf = ModbusRegs_GetHoldingBuffer();
     REG_HOLDING_START = S_REG_HOLDING_START;
     REG_HOLDING_NREGS = S_REG_HOLDING_NREGS;
-    usRegHoldStart = usSRegHoldStart;
+    usRegHoldStart = S_REG_HOLDING_START;
 
     /* it already plus one in modbus function method. */
     usAddress--;
@@ -173,10 +152,10 @@ eMBErrorCode eMBRegCoilsCB(UCHAR * pucRegBuffer, USHORT usAddress,
     USHORT          usCoilStart;
     iNReg =  usNCoils / 8 + 1;
 
-    pucCoilBuf = ucSCoilBuf;
+    pucCoilBuf = ModbusRegs_GetCoilBuffer();
     COIL_START = S_COIL_START;
     COIL_NCOILS = S_COIL_NCOILS;
-    usCoilStart = usSCoilStart;
+    usCoilStart = S_COIL_START;
 
     /* it already plus one in modbus function method. */
     usAddress--;
@@ -249,10 +228,10 @@ eMBErrorCode eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT us
     USHORT          usDiscreteInputStart;
     iNReg =  usNDiscrete / 8 + 1;
 
-    pucDiscreteInputBuf = ucSDiscInBuf;
+    pucDiscreteInputBuf = ModbusRegs_GetDiscreteInputBuffer();
     DISCRETE_INPUT_START = S_DISCRETE_INPUT_START;
     DISCRETE_INPUT_NDISCRETES = S_DISCRETE_INPUT_NDISCRETES;
-    usDiscreteInputStart = usSDiscInStart;
+    usDiscreteInputStart = S_DISCRETE_INPUT_START;
 
     /* it already plus one in modbus function method. */
     usAddress--;

@@ -2,8 +2,9 @@
 #define DELAY_H
 
 #include "stdint.h"
+#include "error_handler.h"
 
-void SysTick_Init(void);
-void SysTick_Delay(uint32_t ms);
+ModbusError_t SysTick_Init(void);
+ModbusError_t SysTick_Delay(uint32_t ms);
 
-#endif // DELAY_H
+#endif /* DELAY_H */

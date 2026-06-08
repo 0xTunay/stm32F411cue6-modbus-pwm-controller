@@ -4,41 +4,77 @@
 
 #define RS485_EN_PIN     8
 
-void RS485_Init(void)
-{
-    USART2_Init();
+ModbusError_t RS485_Init(void) {
+    MODBUS_ASSERT(RCC != NULL);
+    MODBUS_ASSERT(GPIOA != NULL);
 
-    /* Enable clock for GPIO */
+    /* initialize USART first */
+    ModbusError_t err = USART2_Init();
+    MODBUS_CHECK(err);
+
+    /* enable clock for GPIO */
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
 
-    /* Configure EN pin as output */
+    /* configure EN pin (PA8) as output */
     GPIOA->MODER &= ~(3U << (RS485_EN_PIN * 2));
-    GPIOA->MODER |=  (1U << (RS485_EN_PIN * 2));   // Output
+    GPIOA->MODER |=  (1U << (RS485_EN_PIN * 2));
 
-    /* Start in receive mode */
-    RS485_Receive_Enable();
+    /* start in receive mode */
+    err = RS485_Receive_Enable();
+    MODBUS_CHECK(err);
+
+    return MODBUS_OK;
 }
 
-void RS485_Transmit_Enable(void) {
-    GPIOA->BSRR = (1U << RS485_EN_PIN);        // EN = 1 - Transmit
+ModbusError_t RS485_Transmit_Enable(void) {
+    MODBUS_ASSERT(GPIOA != NULL);
+
+    GPIOA->BSRR = (1U << RS485_EN_PIN);
+
+    return MODBUS_OK;
 }
 
-void RS485_Receive_Enable(void) {
-    GPIOA->BSRR = (1U << (RS485_EN_PIN + 16)); // EN = 0 - receive
+ModbusError_t RS485_Receive_Enable(void) {
+    MODBUS_ASSERT(GPIOA != NULL);
+
+    GPIOA->BSRR = (1U << (RS485_EN_PIN + 16));
+
+    return MODBUS_OK;
 }
 
-void RS485_SendChar(char ch) {
-    RS485_Transmit_Enable();           // switch to transmit
+ModbusError_t RS485_SendChar(char ch) {
+    MODBUS_ASSERT(GPIOA != NULL);
+    MODBUS_ASSERT(USART2 != NULL);
 
-    USART2_SendChar(ch);
+    /* switch to transmit mode */
+    ModbusError_t err = RS485_Transmit_Enable();
+    MODBUS_CHECK(err);
 
-    while (!(USART2->SR & USART_SR_TC));   // Wait until byte sent
+    /* send character */
+    err = USART2_SendChar(ch);
+    MODBUS_CHECK(err);
 
-    RS485_Receive_Enable();            // switch back to receive
+    /* wait until transmission is complete */
+    uint32_t timeout = 1000000;
+    while (!(USART2->SR & USART_SR_TC) && timeout-- > 0);
+    MODBUS_CHECK_COND(timeout > 0, MODBUS_ERR_TIMEOUT);
+
+    /* switch back to receive mode */
+    err = RS485_Receive_Enable();
+    MODBUS_CHECK(err);
+
+    return MODBUS_OK;
 }
 
-void RS485_SendString(const char *str) {
-    while (*str) {
-        RS485_SendChar(*str++);
+ModbusError_t RS485_SendString(const char *str) {
+    MODBUS_CHECK_NULL(str);
+    MODBUS_ASSERT(GPIOA != NULL);
+    MODBUS_ASSERT(USART2 != NULL);
+
+    while (*str != '\0') {
+        ModbusError_t err = RS485_SendChar(*str++);
+        MODBUS_CHECK(err);
     }
+
+    return MODBUS_OK;
 }
